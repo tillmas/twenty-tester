@@ -1,0 +1,6 @@
+1.  Data recording feature
+2.  Improve appearance of verbose reporting
+3.  Ensured concurrence of Count/ALIVE fields
+4.  Report only includes entities with non-zero Count
+5.  Report original Count
+6.  Add version to Report
