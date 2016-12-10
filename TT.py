@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 """
-Twenty Tester v 1.4d6 - Jumping Jackal
+Twenty Tester v 1.5d0 - Killer Kobold
 TT.py
 
 Numerical Simulation of Combat in d20 Games
 
 @author: Matt Tillman
 """
-version = '1.4d6 - Jumping Jackal'
+version = '1.5d0 - Killer Kobold'
 
 ### TO DO LIST FOR THIS VERSION
-# 1.  Fix the healing function to have a ceiling at max HP
+# 1. Critical Hit Mechanics Upgrade
 
 import sys
 import pandas as pd
@@ -78,14 +78,36 @@ def hprem(side):
             hpsum = hpsum + rowhp
         return hpsum
 
+def critdam(num,die):
+    """
+    A poor use of a Python function to be sure, the purpose was to clearly identify where the critical damage mechanic was in the code so that users could modify
+    with their own if desired (in this case, the parameter passed is simply an index that determines which critical damage rule is applied, while die is the
+    damage die that is being rolled for the damage in question).  Note that this function does NOT add the bonus damage.
+    """
+    #num = 1 will represent the D&D5e critical damage of 1 extra damage die
+    if num == 1:
+        dam = dice(die) + dice (die)
+    #num = 2 will represent my house rule (50% chance of no extra damage, 35% chance of 1 extra die, 15% chance of 2 extra dice)
+    elif num ==2:
+        roll = dice('1d10') + dice('1d10')*10
+        if roll <= 50:
+            dam = dice(die)
+        elif roll <= 85:
+            dam = dice(die) + dice(die)
+        else:
+            dam = dice(die) + dice(die) + dice(die)
+    return dam
+
+
 ### ENCOUNTER SETUP
 
 story = 'verbose' #'none', 'summary' and 'verbose' are OK answers.
-outfile = 'Test.txt' #output file
+outfile = 'Test.txt' #output file - doesn't do anything right now
 maxrounds = 100 #set low if you want to break up the combat, set high to fight to the death
 OSC = 1 #outer sim counter
 MOSC = 1 #number of monte carlos
 HPHR = 0.5 #hit point fraction at which point they seek healing
+critrule = 1 #which critical damage rule will be used (see critdam() for more)
 
 friendfile = pd.read_csv('Friend.csv', header=0)
 foefile = pd.read_csv('Foe.csv', header = 0)
@@ -225,18 +247,17 @@ for OSC in range (1, MOSC+1):
                         #attack
                         attackroll = dice('1d20') + activeside.MAB[activeunit]
                         #damage
-                        if (attackroll >= targets.AC.iloc[targetunit]):
-                            if story=='verbose':
+                        if (attackroll - activeside.MAB[activeunit]) == 20:
+                            if story == 'verbose':
+                                print('Critical Hit')
+                            damage = critdam(critrule,activeside.MDAM1[activeunit]) + activeside.MDAMB[activeunit]
+                        elif (attackroll >= targets.AC.iloc[targetunit]):
+                            if story == 'verbose':
                                 print('Target Hit')
                             damage = dice(activeside.MDAM1[activeunit]) + activeside.MDAMB[activeunit]
-                        #multi attack
-                        if activeside.MATTCNT[activeunit] > 1:
-                            attackroll = dice('1d20') + activeside.MAB[activeunit]
-                            #damage
-                            if (attackroll >= targets.AC.iloc[targetunit]):
-                                damage = damage + dice(activeside.MDAM1[activeunit]) + activeside.MDAMB[activeunit]
+
                         #attrition
-                        if (story=='verbose' and damage !=0):
+                        if (story == 'verbose' and damage !=0):
                             print('Damage: '+str(damage))
                         if (story=='verbose' and damage == 0):
                             print('Target Missed')
@@ -252,6 +273,54 @@ for OSC in range (1, MOSC+1):
                             targets.loc[targets.Name==targetname,'WHP'] = targets.WHP.iloc[targetunit] - damage
                             if (story=='verbose' and damage !=0):
                                 print('One ' + str(targetname) +' damaged, new HP: '+str(targets.WHP.iloc[targetunit]))
+
+                        #multi attack
+                        if activeside.MATTCNT[activeunit] > 1:
+                            if story == 'verbose':
+                                print('Second melee attack')
+                            #repeat entire melee process for multi attack (including target sort)
+                            targettemp = oppside.loc[oppside.POS == activeside.POS[activeunit]]
+                            if (targettemp.ALIVE.sum() > 0):
+                                targets = targettemp.loc[targettemp.ALIVE != 0]
+                            else:
+                                break
+                            #draw a random target assignment
+                            targetunit = randint(0,len(targets)-1)
+                            targetname = targets.Name.iloc[targetunit]
+                            if story=='verbose':
+                                print('Target: '+str(targets.Name.iloc[targetunit]) + ' (' +str(targets.ALIVE.iloc[targetunit]) + ')')
+                            damage = 0
+                            #attack
+                            attackroll = dice('1d20') + activeside.MAB[activeunit]
+                            #damage
+                            if (attackroll - activeside.MAB[activeunit]) == 20:
+                                if story=='verbose':
+                                    print('Critical Hit')
+                                damage = critdam(critrule,activeside.MDAM1[activeunit]) + activeside.MDAMB[activeunit]
+                            elif (attackroll >= targets.AC.iloc[targetunit]):
+                                if story=='verbose':
+                                    print('Target Hit')
+                                damage = dice(activeside.MDAM1[activeunit]) + activeside.MDAMB[activeunit]
+
+                            #attrition
+                            if (story=='verbose' and damage !=0):
+                                print('Damage: '+str(damage))
+                            if (story=='verbose' and damage == 0):
+                                print('Target Missed')
+                            if damage >= targets.WHP.iloc[targetunit]:
+                                targets.loc[targets.Name==targetname,'ALIVE'] = targets.ALIVE.iloc[targetunit] - 1
+                                if story=='verbose':
+                                    print('One '+ str(targetname) +' killed, new count: '+str(targets.ALIVE.iloc[targetunit]))
+                                if targets.ALIVE.iloc[targetunit] == 0:
+                                    targets.loc[targets.Name==targetname,'WHP'] = 0
+                                else:
+                                    targets.loc[targets.Name==targetname,'WHP'] = targets.HP.iloc[targetunit]
+                            else:
+                                targets.loc[targets.Name==targetname,'WHP'] = targets.WHP.iloc[targetunit] - damage
+                                if (story=='verbose' and damage !=0):
+                                    print('One ' + str(targetname) +' damaged, new HP: '+str(targets.WHP.iloc[targetunit]))
+
+                        #unit turn over
                         if story=='verbose':
                             print('Unit turn complete, restoring data frames')
                         if initside == 0:
@@ -261,7 +330,7 @@ for OSC in range (1, MOSC+1):
                             friend.loc[friend.Name==targets.Name.iloc[targetunit],'WHP'] =  targets.WHP.iloc[targetunit]
                             friend.loc[friend.Name==targets.Name.iloc[targetunit],'ALIVE'] =  targets.ALIVE.iloc[targetunit]
 
-                #IF ENEMY IS IN RANGED TARGET SQUARE (current development)
+                #IF ENEMY IS IN RANGED TARGET SQUARE
                 elif (rangeclose(oppside, activeside.POS[activeunit]) <= 2 and rangeclose(oppside, activeside.POS[activeunit]) > 0 and activeside.PrefType[activeunit] == 'R'):
                     if story=='verbose':
                         print('Ranged Combat Action')
@@ -282,11 +351,15 @@ for OSC in range (1, MOSC+1):
                         #attack
                         attackroll = dice('1d20') + activeside.RAB[activeunit]
                         #damage
-                        if (attackroll >= targets.AC.iloc[targetunit]):
+                        if (attackroll - activeside.RAB[activeunit]) == 20:
+                            if story=='verbose':
+                                print('Critical Hit')
+                            damage = critdam(critrule,activeside.RDAM1[activeunit]) + activeside.RDAMB[activeunit]
+                        elif (attackroll >= targets.AC.iloc[targetunit]):
                             if story=='verbose':
                                 print('Target Hit')
                             damage = dice(activeside.RDAM1[activeunit]) + activeside.RDAMB[activeunit]
-                        #multi attack not implemented for ranged weapons in 1.0
+
                         #attrition
                         if (story=='verbose' and damage != 0):
                             print('Damage: '+str(damage))
@@ -304,6 +377,55 @@ for OSC in range (1, MOSC+1):
                             targets.loc[targets.Name==targetname,'WHP'] = targets.WHP.iloc[targetunit] - damage
                             if story=='verbose':
                                 print('One ' + str(targetname) +' damaged, new HP: '+str(targets.WHP.iloc[targetunit]))
+
+                        #multi attack repeat entire attack cycle
+                        if activeside.RATTCNT[activeunit] > 1:
+                            if story == 'verbose':
+                                print('Second ranged attack')
+                            for i in range(0,activeside.ALIVE[activeunit]):
+                                targetrange = rangeclose(oppside, activeside.POS[activeunit])
+                                targetpos = targetrange * direction + activeside.POS[activeunit]
+                                targettemp = oppside.loc[oppside.POS == targetpos]
+                                if (targettemp.ALIVE.sum() > 0):
+                                    targets = targettemp.loc[targettemp.ALIVE != 0]
+                                else:
+                                    break
+                                #draw a random target assignment from the acceptable targets
+                                targetunit = randint(0,len(targets)-1)
+                                targetname = targets.Name.iloc[targetunit]
+                                if story=='verbose':
+                                    print('Target: '+str(targets.Name.iloc[targetunit]) + ' (' +str(targets.ALIVE.iloc[targetunit]) + ')')
+                                damage = 0
+                                #attack
+                                attackroll = dice('1d20') + activeside.RAB[activeunit]
+                                #damage
+                                if (attackroll - activeside.RAB[activeunit]) == 20:
+                                    if story=='verbose':
+                                        print('Critical Hit')
+                                    damage = critdam(critrule,activeside.RDAM1[activeunit]) + activeside.RDAMB[activeunit]
+                                elif (attackroll >= targets.AC.iloc[targetunit]):
+                                    if story=='verbose':
+                                        print('Target Hit')
+                                    damage = dice(activeside.RDAM1[activeunit]) + activeside.RDAMB[activeunit]
+
+                                #attrition
+                                if (story=='verbose' and damage != 0):
+                                    print('Damage: '+str(damage))
+                                if (story=='verbose' and damage == 0):
+                                    print('Target Missed')
+                                if damage >= targets.WHP.iloc[targetunit]:
+                                    targets.loc[targets.Name==targetname,'ALIVE'] = targets.ALIVE.iloc[targetunit] - 1
+                                    if story=='verbose':
+                                        print('One '+ str(targetname) +' killed, new count: '+str(targets.ALIVE.iloc[targetunit]))
+                                    if targets.ALIVE.iloc[targetunit] == 0:
+                                        targets.loc[targets.Name==targetname,'WHP'] = 0
+                                    else:
+                                        targets.loc[targets.Name==targetname,'WHP'] = targets.HP.iloc[targetunit]
+                                else:
+                                    targets.loc[targets.Name==targetname,'WHP'] = targets.WHP.iloc[targetunit] - damage
+                                    if story=='verbose':
+                                        print('One ' + str(targetname) +' damaged, new HP: '+str(targets.WHP.iloc[targetunit]))
+                        #unit turn over
                         if story=='verbose':
                             print('Unit turn complete, restoring data frames')
                         if initside == 0:
