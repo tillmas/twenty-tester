@@ -1,5 +1,5 @@
 # twenty-tester
-Current Version 1.4d6 Jumping Jackal
+Current Version 1.5 Killer Kobold
 
 Developed to numerically simulate interesting features of combat in d20 games.
 
