@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-Twenty Tester v 1.4d - Jumping Jackal (IN DEVELOPMENT)
-TT-II.py
+Twenty Tester v 1.4d5 - Jumping Jackal (IN DEVELOPMENT)
+TT.py
 
-Created on Wed Dec  7 06:44:21 2016
+Numerical Simulation of Combat in d20 Games
 
-@author: tillmms1
+@author: Matt Tillman
 """
 
 ### TO DO LIST FOR THIS VERSION 
@@ -15,9 +15,6 @@ Created on Wed Dec  7 06:44:21 2016
 # DONE 4.  Only report out on entities that had a non-zero Count
 # DONE 5.  Add original counts to results matrix 
 # DONE 6.  Add version to report out
-
-### TO DO LIST FOR NEXT VERSION (1.5 Killer Kobold)
-# 1.  Multi attack for ranged weapons
 
 
 import sys
