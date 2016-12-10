@@ -3,9 +3,11 @@
 Twenty Tester v 1.3 - Intense Incubus
 TT-II.py
 
+A Python based tool for the numerical simulation of combat in d20 based games.
+
 Created on Wed Dec  7 06:44:21 2016
 
-@author: tillmms1
+@author: Matt Tillman
 """
 
 ### TO DO LIST FOR FUTURE VERSION (Jumping Jehoshaphat)
