@@ -14,3 +14,5 @@ RELEASE NOTES:
 1.  Added critical hit functionality for Melee and Ranged attacks via the critdam() function.  Please see the function documentation for the two rules for critical damage implemented.
 
 2.  Fixed an error in multi-attack melee attack damage
+
+3.  Cleaned up some verbose output problems for ranged weapons
