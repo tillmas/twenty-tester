@@ -5,4 +5,5 @@ Python analytic tool for modeling combat in d20 games
 Developed to numerically simulate interesting features of combat in d20 games.
 
 Basic functionality is included in TT.py
-Requires Friend.CSV and Foe.CSV (examples in repository)
+Requires friend.CSV and foe.CSV (examples in repository). 
+Please see the GitHub wiki for information on the csv files.
