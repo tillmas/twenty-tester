@@ -10,12 +10,6 @@ Created on Wed Dec  7 06:44:21 2016
 @author: Matt Tillman
 """
 
-### TO DO LIST FOR FUTURE VERSION (Jumping Jehoshaphat)
-# 1.  Make a data recording feature.
-# 2.  Make improvements to the appearance of verbose reporting
-# 3.  Consider friend/foe read in that populates ALIVE with Count to ensure commonality
-
-
 import sys
 import pandas as pd
 import numpy as np
