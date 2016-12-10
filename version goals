@@ -1,6 +1,7 @@
-1.  Data recording feature
-2.  Improve appearance of verbose reporting 1.4d5
-3.  Ensured concurrence of Count/ALIVE fields 1.4d1
-4.  Report only includes entities with non-zero Count 1.4d3
-5.  Report original Count 1.4d4
-6.  Add version to Report 1.4d2
+1.  Data recording feature [PUSH TO 1.5]
+2.  Improve appearance of verbose reporting [1.4]
+3.  Ensured concurrence of Count/ALIVE fields [1.4]
+4.  Report only includes entities with non-zero Count [1.4]
+5.  Report original Count [1.4]
+6.  Add version to Report [1.4]
+7.  Correct healing function (1.4d6)
