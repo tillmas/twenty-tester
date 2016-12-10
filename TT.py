@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Twenty Tester v 1.4d6 - Jumping Jackal DEV
+Twenty Tester v 1.4d6 - Jumping Jackal
 TT.py
 
 Numerical Simulation of Combat in d20 Games
