@@ -3,6 +3,8 @@
 Twenty Tester v 1.5d0 - Killer Kobold
 TT.py
 
+Build 2
+
 Numerical Simulation of Combat in d20 Games
 
 @author: Matt Tillman
@@ -375,56 +377,55 @@ for OSC in range (1, MOSC+1):
                                 targets.loc[targets.Name==targetname,'WHP'] = targets.HP.iloc[targetunit]
                         else:
                             targets.loc[targets.Name==targetname,'WHP'] = targets.WHP.iloc[targetunit] - damage
-                            if story=='verbose':
+                            if (story=='verbose' and damage !=0):
                                 print('One ' + str(targetname) +' damaged, new HP: '+str(targets.WHP.iloc[targetunit]))
 
                         #multi attack repeat entire attack cycle
                         if activeside.RATTCNT[activeunit] > 1:
                             if story == 'verbose':
                                 print('Second ranged attack')
-                            for i in range(0,activeside.ALIVE[activeunit]):
-                                targetrange = rangeclose(oppside, activeside.POS[activeunit])
-                                targetpos = targetrange * direction + activeside.POS[activeunit]
-                                targettemp = oppside.loc[oppside.POS == targetpos]
-                                if (targettemp.ALIVE.sum() > 0):
-                                    targets = targettemp.loc[targettemp.ALIVE != 0]
-                                else:
-                                    break
-                                #draw a random target assignment from the acceptable targets
-                                targetunit = randint(0,len(targets)-1)
-                                targetname = targets.Name.iloc[targetunit]
+                            targetrange = rangeclose(oppside, activeside.POS[activeunit])
+                            targetpos = targetrange * direction + activeside.POS[activeunit]
+                            targettemp = oppside.loc[oppside.POS == targetpos]
+                            if (targettemp.ALIVE.sum() > 0):
+                                targets = targettemp.loc[targettemp.ALIVE != 0]
+                            else:
+                                break
+                            #draw a random target assignment from the acceptable targets
+                            targetunit = randint(0,len(targets)-1)
+                            targetname = targets.Name.iloc[targetunit]
+                            if story=='verbose':
+                                print('Target: '+str(targets.Name.iloc[targetunit]) + ' (' +str(targets.ALIVE.iloc[targetunit]) + ')')
+                            damage = 0
+                            #attack
+                            attackroll = dice('1d20') + activeside.RAB[activeunit]
+                            #damage
+                            if (attackroll - activeside.RAB[activeunit]) == 20:
                                 if story=='verbose':
-                                    print('Target: '+str(targets.Name.iloc[targetunit]) + ' (' +str(targets.ALIVE.iloc[targetunit]) + ')')
-                                damage = 0
-                                #attack
-                                attackroll = dice('1d20') + activeside.RAB[activeunit]
-                                #damage
-                                if (attackroll - activeside.RAB[activeunit]) == 20:
-                                    if story=='verbose':
-                                        print('Critical Hit')
-                                    damage = critdam(critrule,activeside.RDAM1[activeunit]) + activeside.RDAMB[activeunit]
-                                elif (attackroll >= targets.AC.iloc[targetunit]):
-                                    if story=='verbose':
-                                        print('Target Hit')
-                                    damage = dice(activeside.RDAM1[activeunit]) + activeside.RDAMB[activeunit]
+                                    print('Critical Hit')
+                                damage = critdam(critrule,activeside.RDAM1[activeunit]) + activeside.RDAMB[activeunit]
+                            elif (attackroll >= targets.AC.iloc[targetunit]):
+                                if story=='verbose':
+                                    print('Target Hit')
+                                damage = dice(activeside.RDAM1[activeunit]) + activeside.RDAMB[activeunit]
 
-                                #attrition
-                                if (story=='verbose' and damage != 0):
-                                    print('Damage: '+str(damage))
-                                if (story=='verbose' and damage == 0):
-                                    print('Target Missed')
-                                if damage >= targets.WHP.iloc[targetunit]:
-                                    targets.loc[targets.Name==targetname,'ALIVE'] = targets.ALIVE.iloc[targetunit] - 1
-                                    if story=='verbose':
-                                        print('One '+ str(targetname) +' killed, new count: '+str(targets.ALIVE.iloc[targetunit]))
-                                    if targets.ALIVE.iloc[targetunit] == 0:
-                                        targets.loc[targets.Name==targetname,'WHP'] = 0
-                                    else:
-                                        targets.loc[targets.Name==targetname,'WHP'] = targets.HP.iloc[targetunit]
+                            #attrition
+                            if (story=='verbose' and damage != 0):
+                                print('Damage: '+str(damage))
+                            if (story=='verbose' and damage == 0):
+                                print('Target Missed')
+                            if damage >= targets.WHP.iloc[targetunit]:
+                                targets.loc[targets.Name==targetname,'ALIVE'] = targets.ALIVE.iloc[targetunit] - 1
+                                if story=='verbose':
+                                    print('One '+ str(targetname) +' killed, new count: '+str(targets.ALIVE.iloc[targetunit]))
+                                if targets.ALIVE.iloc[targetunit] == 0:
+                                    targets.loc[targets.Name==targetname,'WHP'] = 0
                                 else:
-                                    targets.loc[targets.Name==targetname,'WHP'] = targets.WHP.iloc[targetunit] - damage
-                                    if story=='verbose':
-                                        print('One ' + str(targetname) +' damaged, new HP: '+str(targets.WHP.iloc[targetunit]))
+                                    targets.loc[targets.Name==targetname,'WHP'] = targets.HP.iloc[targetunit]
+                            else:
+                                targets.loc[targets.Name==targetname,'WHP'] = targets.WHP.iloc[targetunit] - damage
+                                if (story=='verbose' and damage !=0):
+                                    print('One ' + str(targetname) +' damaged, new HP: '+str(targets.WHP.iloc[targetunit]))
                         #unit turn over
                         if story=='verbose':
                             print('Unit turn complete, restoring data frames')
