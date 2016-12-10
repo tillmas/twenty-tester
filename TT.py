@@ -10,12 +10,6 @@ Numerical Simulation of Combat in d20 Games
 
 ### TO DO LIST FOR THIS VERSION 
 # 1.  Make a data recording feature.
-# DONE 2.  Make improvements to the appearance of verbose reporting
-# DONE 3.  Consider friend/foe read in that populates ALIVE with Count to ensure commonality
-# DONE 4.  Only report out on entities that had a non-zero Count
-# DONE 5.  Add original counts to results matrix 
-# DONE 6.  Add version to report out
-
 
 import sys
 import pandas as pd
