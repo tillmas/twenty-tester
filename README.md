@@ -16,3 +16,5 @@ RELEASE NOTES:
 2.  Fixed an error in multi-attack melee attack damage
 
 3.  Cleaned up some verbose output problems for ranged weapons
+
+4.  Added multi-attack capability for ranged weapons
