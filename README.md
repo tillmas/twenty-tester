@@ -20,3 +20,4 @@ RELEASE NOTES:
 4.  Added multi-attack capability for ranged weapons
 
 5.  Fixed an error with the results table from 1.4
+
