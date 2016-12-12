@@ -1,24 +1,28 @@
 # twenty-tester
-Current Version 1.5d2 Killer Kobold
+Current Version 1.6d0 Likable Lich
 
 Developed to numerically simulate interesting features of combat in d20 games.
 
-Basic functionality is included in TT.py
+Files included in distribution:
 
-Requires friend.CSV and foe.CSV (examples in repository).
+TTDriver.py - sets up the parameters that will be run and handles I/O
+
+TT.py - simulates the encounter
+
+Friend.csv - user input csv file that defines one side of the encounter
+
+Foe.csd - user input csv file that defines the other side of the encounter
+
+setup.cfg - user input csv file that defines the parameters of the analysis runs
+
+TTlogo.png - the beautiful logo for twenty-tester
 
 Please see the GitHub wiki for information on the csv files.
 
 RELEASE NOTES:
 
-1.  Added critical hit functionality for Melee and Ranged attacks via the critdam() function. Please see the function documentation for the two rules for critical damage implemented.
+1.  TT.py is now driven by TTDriver.py, parameter changes for multiple runs can be set using runsetup.cfg
 
-2.  Fixed an error in multi-attack melee attack damage
+2.  Files in release are set up to show a sweep through an encounter of various sizes to determine what is a challenge for the party
 
-3.  Cleaned up some verbose output problems for ranged weapons
-
-4.  Added multi-attack capability for ranged weapons
-
-5.  Fixed an error with the results table from 1.4
-
-6.  Fixed a data input problem that resulted in a mismatch between initial and final entity counts
+3.  Code is sloppy, inefficient and poorly commented, but it seems to work
