@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 """
-Twenty Tester v 1.5d0b6 - Killer Kobold
+Twenty Tester v1.6d0b1 - Likable Lich
 TT.py
 
 Numerical Simulation of Combat in d20 Games
 
 @author: Matt Tillman
 """
-version = '1.5d0b6 - Killer Kobold'
+version = '1.6d0b1 - Likable Lich'
 
 
 import sys
@@ -82,10 +82,10 @@ def critdam(num,die):
     with their own if desired (in this case, the parameter passed is simply an index that determines which critical damage rule is applied, while die is the
     damage die that is being rolled for the damage in question).  Note that this function does NOT add the bonus damage.
     """
-    #num = 1 will represent the D&D5e critical damage of 1 extra damage die
+    #num = 1 will represent 1 extra damage die
     if num == 1:
         dam = dice(die) + dice (die)
-    #num = 2 will represent my house rule (50% chance of no extra damage, 35% chance of 1 extra die, 15% chance of 2 extra dice)
+    #num = 2 will represent a 50% chance of no extra damage, 35% chance of 1 extra die, 15% chance of 2 extra dice
     elif num ==2:
         roll = dice('1d10') + dice('1d10')*10
         if roll <= 50:
@@ -526,8 +526,8 @@ for OSC in range (1, MOSC+1):
         results.loc[i,'SurvFrac'] = (results.SurvFrac[i]*(OSC-1)*friend.Count[i]+friend.ALIVE[i])/(OSC*friend.Count[i])
     for i in range(0, len(foe)):
         results.loc[(i + len(friend)),'SurvFrac'] = (results.SurvFrac[i + len(friend)]*(OSC-1)*foe.Count[i]+foe.ALIVE[i])/(OSC*foe.Count[i])
-    
-    
+
+
 
     #timing
     loop_time = time.time() - loop_start_time
