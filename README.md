@@ -1,5 +1,5 @@
 # twenty-tester
-  ###Current Version 1.6d0 Likable Lich
+###Current Version 1.6d0 Likable Lich
 
   Developed to numerically simulate interesting features of combat in d20 games.
 
