@@ -13,3 +13,4 @@ RELEASE NOTES:
 
 1.  TT.py is now driven by TTDriver.py, parameter changes for multiple runs can be set using runsetup.cfg
 
+2.  Files in release are set up to show a sweep through an encounter of various sizes to determine what is a challenge for the party
