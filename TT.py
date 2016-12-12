@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 """
-Twenty Tester v1.6d0b1 - Likable Lich
+Twenty Tester v1.6d0b2 - Likable Lich
 TT.py
 
 Numerical Simulation of Combat in d20 Games
 
 @author: Matt Tillman
 """
-version = '1.6d0b1 - Likable Lich'
+version = '1.6d0b2 - Likable Lich'
 
 
 import sys
@@ -97,12 +97,11 @@ def critdam(num,die):
     return dam
 
 
-### ENCOUNTER SETUP
+### ENCOUNTER SETUP USER PARAMETERS
 
 story = 'none' #'none', 'summary' and 'verbose' are OK answers.
 outfile = 'Test.txt' #output file - doesn't do anything right now
 maxrounds = 100 #set low if you want to break up the combat, set high to fight to the death
-OSC = 1 #outer sim counter
 MOSC = 50 #number of monte carlos
 HPHR = 0.5 #hit point fraction at which point they seek healing
 critrule = 1 #which critical damage rule will be used (see critdam() for more)
@@ -128,6 +127,7 @@ for i in range(0, len(foefile)):
     results.loc[i+len(friendfile),'Count'] = foefile.Count[i]
     foefile.loc[i,'ALIVE'] = foefile.Count[i]
 
+OSC = 1 #outer sim counter
 
 ### OUTER LOOP BEGINS HERE!!!
 for OSC in range (1, MOSC+1):
