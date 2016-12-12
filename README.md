@@ -1,5 +1,5 @@
 # twenty-tester
-Current Version 1.5d0 Killer Kobold
+Current Version 1.5d1 Killer Kobold
 
 Developed to numerically simulate interesting features of combat in d20 games.
 
