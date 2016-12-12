@@ -21,5 +21,4 @@ RELEASE NOTES:
 
 5.  Fixed an error with the results table from 1.4
 
-6.  Fixed a large problem with the results from 1.5d1
-
+6.  Fixed a data input problem that resulted in a mismatch between initial and final entity counts
