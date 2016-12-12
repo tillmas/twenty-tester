@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 """
-Twenty Tester v 1.5d0b7 - Killer Kobold
+Twenty Tester v 1.5d1b1 - Killer Kobold
 TT.py
 
 Numerical Simulation of Combat in d20 Games
 
 @author: Matt Tillman
 """
-version = '1.5d0b7 - Killer Kobold'
+version = '1.5d1b1 - Killer Kobold'
 
 
 import sys
