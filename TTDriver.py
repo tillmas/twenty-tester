@@ -23,10 +23,11 @@ import TT
 inputParam = pd.read_csv('runsetup.cfg', header = 0)
 
 totalRuns = len(inputParam)
-
+print('Initializing for ' + str(len(inputParam)) + ' runs')
 ### assign varibles passed to TT
 
 for run in range(0,totalRuns):
+    print('Run ' + str(run+1) +' of ' + str(totalRuns) + ' beginning')    
     story = inputParam.story[run]
     friendfilename = inputParam.friendfile[run]
     foefilename = inputParam.foefile[run]
@@ -63,13 +64,10 @@ for run in range(0,totalRuns):
 #Clear items from the results frame that didn't fight
     results = results[results.Count != 0]
 
-    print('Results from Twenty Tester v.' + version)
-    print('After an Average of '+str(avgrounds) + ' rounds over ' + str(MOSC) + ' replicates')
-    print('HPHR set to ' + str(HPHR))
-    print(results)
-
 ### write output to file
 
+    results.to_csv(outfile)
+    print('Run complete')
 
 ### repeat
 
