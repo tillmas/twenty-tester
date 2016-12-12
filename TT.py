@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 """
-Twenty Tester v 1.5d1b1 - Killer Kobold
+Twenty Tester v 1.5d2 - Killer Kobold
 TT.py
 
 Numerical Simulation of Combat in d20 Games
 
 @author: Matt Tillman
 """
-version = '1.5d1b1 - Killer Kobold'
+version = '1.5d2 - Killer Kobold'
 
 
 import sys
@@ -135,6 +135,11 @@ for OSC in range (1, MOSC+1):
 
     friend = pd.read_csv('Friend.csv', header=0)
     foe = pd.read_csv('Foe.csv', header = 0)
+    
+    for i in range(0,len(friend)):
+        friend.loc[i,'ALIVE'] = friend.Count[i]
+    for i in range(0,len(foe)):
+        foe.loc[i,'ALIVE'] = foe.Count[i]
 
     friendcount = friend.ALIVE.sum()
     foecount = foe.ALIVE.sum()
@@ -526,9 +531,7 @@ for OSC in range (1, MOSC+1):
         results.loc[i,'SurvFrac'] = (results.SurvFrac[i]*(OSC-1)*friend.Count[i]+friend.ALIVE[i])/(OSC*friend.Count[i])
     for i in range(0, len(foe)):
         results.loc[(i + len(friend)),'SurvFrac'] = (results.SurvFrac[i + len(friend)]*(OSC-1)*foe.Count[i]+foe.ALIVE[i])/(OSC*foe.Count[i])
-    
-    
-
+ 
     #timing
     loop_time = time.time() - loop_start_time
     avg_time = (avg_time * (OSC-1) + loop_time)/OSC
