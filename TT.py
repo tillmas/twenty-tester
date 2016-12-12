@@ -12,15 +12,6 @@ import pandas as pd
 import numpy as np
 from random import randint
 
-
-### version to do
-# 1.  divide TT.py 1.6d0 into functions
-# A.  setup function
-# B.  Loop function
-# C.  results function
-# D.  Eliminate timers [DONE]
-
-
 ### Functions
 
 def dice(dicestr):
@@ -103,48 +94,48 @@ def critdam(num,die):
 
 def encounterloop(story,friendfilename,foefilename,maxrounds,MOSC,HPHR,critrule,results):
     """
-    The function at the heart of TT.py.  Called from TTDriver.py
+    The function at the heart of TT.py.  Called from TTDriver.py, or not if you like.
     """
-    version = '1.6d0 - Likable Lich' 
+    version = '1.6d0 - Likable Lich'
     OSC = 1
     avgrounds = 0
     for OSC in range (1, MOSC+1):
-        
-    
+
+
         friend = pd.read_csv(friendfilename, header=0)
         foe = pd.read_csv(foefilename, header = 0)
-        
+
         for i in range(0,len(friend)):
             friend.loc[i,'ALIVE'] = friend.Count[i]
         for i in range(0,len(foe)):
             foe.loc[i,'ALIVE'] = foe.Count[i]
-    
+
         friendcount = friend.ALIVE.sum()
         foecount = foe.ALIVE.sum()
         friendcond = condcheck(friend)
         foecond = condcheck(foe)
-    
-    
+
+
         ### INITIATIVE SECTION
-    
+
         if story=='verbose':
             print('Rolling for initiative')
         totalgroups = len(foe) + len(friend)
-    
+
         for i in range(0, len(friend)):
             initroll = dice('1d20') + friend.IB[i]
             friend.loc[i,'ORDER'] = initroll
-    
+
         for i in range(0, len(foe)):
             initroll = dice('1d20') + foe.IB[i]
             foe.loc[i,'ORDER'] = initroll
-    
+
         rmax = max(friend.ORDER)
         omax = max(foe.ORDER)
         imax = max(omax,rmax)
-    
+
         initorder = []
-    
+
         for i in range (0,imax+1):
             for j in range(0,len(friend)):
                 if friend.ORDER[j] == i:
@@ -152,9 +143,9 @@ def encounterloop(story,friendfilename,foefilename,maxrounds,MOSC,HPHR,critrule,
             for k in range (0,len(foe)):
                 if foe.ORDER[k] == i:
                     initorder.append([1,k])
-    
+
         ### ENCOUNTER CALCULATIONS
-    
+
         for round in range(0,maxrounds):
             if story=='verbose':
                 print('***** ROUND '+str(round+1) + ' *****')
@@ -172,7 +163,7 @@ def encounterloop(story,friendfilename,foefilename,maxrounds,MOSC,HPHR,critrule,
                 #### section to skip those who are no longer alive (or no longer undead?)
                 if activeside.ALIVE[activeunit] == 0:
                     continue
-    
+
                 if story=='verbose':
                     print('*** ' + activeside.Name[activeunit]+' Turn')
                 #MOVEMENT
@@ -197,7 +188,7 @@ def encounterloop(story,friendfilename,foefilename,maxrounds,MOSC,HPHR,critrule,
                             #advance
                             newPOS = activeside.POS.iloc[activeunit] + direction
                             activeside.loc[activeunit,'POS'] = newPOS
-    
+
                 #healing should be an alternate action to attacking, need to make the healing decision first, then make combat an else
                 if ((activeside.WHP[activeunit]/activeside.HP[activeunit]) < HPHR and activeside.HEALCOUNT[activeunit] > 0):
                     heal = dice(activeside.HEAL[activeunit])
@@ -205,8 +196,8 @@ def encounterloop(story,friendfilename,foefilename,maxrounds,MOSC,HPHR,critrule,
                     activeside.loc[activeunit,'HEALCOUNT'] = activeside.HEALCOUNT[activeunit] - 1
                     if story == 'verbose':
                         print('Healing Action - New HP: '+str(activeside.WHP[activeunit]))
-    
-    
+
+
                 else:
                     #COMBAT
                     #IF ENEMY IS IN CURRENT SQUARE MELEE
@@ -236,7 +227,7 @@ def encounterloop(story,friendfilename,foefilename,maxrounds,MOSC,HPHR,critrule,
                                 if story == 'verbose':
                                     print('Target Hit')
                                 damage = dice(activeside.MDAM1[activeunit]) + activeside.MDAMB[activeunit]
-    
+
                             #attrition
                             if (story == 'verbose' and damage !=0):
                                 print('Damage: '+str(damage))
@@ -254,7 +245,7 @@ def encounterloop(story,friendfilename,foefilename,maxrounds,MOSC,HPHR,critrule,
                                 targets.loc[targets.Name==targetname,'WHP'] = targets.WHP.iloc[targetunit] - damage
                                 if (story=='verbose' and damage !=0):
                                     print('One ' + str(targetname) +' damaged, new HP: '+str(targets.WHP.iloc[targetunit]))
-    
+
                             #multi attack
                             if activeside.MATTCNT[activeunit] > 1:
                                 if story == 'verbose':
@@ -282,7 +273,7 @@ def encounterloop(story,friendfilename,foefilename,maxrounds,MOSC,HPHR,critrule,
                                     if story=='verbose':
                                         print('Target Hit')
                                     damage = dice(activeside.MDAM1[activeunit]) + activeside.MDAMB[activeunit]
-    
+
                                 #attrition
                                 if (story=='verbose' and damage !=0):
                                     print('Damage: '+str(damage))
@@ -300,7 +291,7 @@ def encounterloop(story,friendfilename,foefilename,maxrounds,MOSC,HPHR,critrule,
                                     targets.loc[targets.Name==targetname,'WHP'] = targets.WHP.iloc[targetunit] - damage
                                     if (story=='verbose' and damage !=0):
                                         print('One ' + str(targetname) +' damaged, new HP: '+str(targets.WHP.iloc[targetunit]))
-    
+
                             #unit turn over
                             if story=='verbose':
                                 print('Unit turn complete, restoring data frames')
@@ -310,7 +301,7 @@ def encounterloop(story,friendfilename,foefilename,maxrounds,MOSC,HPHR,critrule,
                             else:
                                 friend.loc[friend.Name==targets.Name.iloc[targetunit],'WHP'] =  targets.WHP.iloc[targetunit]
                                 friend.loc[friend.Name==targets.Name.iloc[targetunit],'ALIVE'] =  targets.ALIVE.iloc[targetunit]
-    
+
                     #IF ENEMY IS IN RANGED TARGET SQUARE
                     elif (rangeclose(oppside, activeside.POS[activeunit]) <= 2 and rangeclose(oppside, activeside.POS[activeunit]) > 0 and activeside.PrefType[activeunit] == 'R'):
                         if story=='verbose':
@@ -340,7 +331,7 @@ def encounterloop(story,friendfilename,foefilename,maxrounds,MOSC,HPHR,critrule,
                                 if story=='verbose':
                                     print('Target Hit')
                                 damage = dice(activeside.RDAM1[activeunit]) + activeside.RDAMB[activeunit]
-    
+
                             #attrition
                             if (story=='verbose' and damage != 0):
                                 print('Damage: '+str(damage))
@@ -358,7 +349,7 @@ def encounterloop(story,friendfilename,foefilename,maxrounds,MOSC,HPHR,critrule,
                                 targets.loc[targets.Name==targetname,'WHP'] = targets.WHP.iloc[targetunit] - damage
                                 if (story=='verbose' and damage !=0):
                                     print('One ' + str(targetname) +' damaged, new HP: '+str(targets.WHP.iloc[targetunit]))
-    
+
                             #multi attack repeat entire attack cycle
                             if activeside.RATTCNT[activeunit] > 1:
                                 if story == 'verbose':
@@ -387,7 +378,7 @@ def encounterloop(story,friendfilename,foefilename,maxrounds,MOSC,HPHR,critrule,
                                     if story=='verbose':
                                         print('Target Hit')
                                     damage = dice(activeside.RDAM1[activeunit]) + activeside.RDAMB[activeunit]
-    
+
                                 #attrition
                                 if (story=='verbose' and damage != 0):
                                     print('Damage: '+str(damage))
@@ -414,7 +405,7 @@ def encounterloop(story,friendfilename,foefilename,maxrounds,MOSC,HPHR,critrule,
                             else:
                                 friend.loc[friend.Name==targets.Name.iloc[targetunit],'WHP'] =  targets.WHP.iloc[targetunit]
                                 friend.loc[friend.Name==targets.Name.iloc[targetunit],'ALIVE'] =  targets.ALIVE.iloc[targetunit]
-    
+
                     #IF ENEMY IS IN SPELL TARGET SQUARE SPELL (make work with type S anywhere on the battlefield)
                     elif (activeside.PrefType[activeunit] == 'S'):
                         if story=='verbose':
@@ -477,19 +468,19 @@ def encounterloop(story,friendfilename,foefilename,maxrounds,MOSC,HPHR,critrule,
                             else:
                                 friend.loc[friend.Name==targets.Name.iloc[targetunit],'WHP'] =  targets.WHP.iloc[targetunit]
                                 friend.loc[friend.Name==targets.Name.iloc[targetunit],'ALIVE'] =  targets.ALIVE.iloc[targetunit]
-    
+
             #character turn over, back to book keeping
-    
+
             if friend.ALIVE.sum() == 0:
                 break
             if foe.ALIVE.sum() == 0:
                 break
                 #NEED TO TERMINATE WHEN ONE SIDE IS DEAD
-    
+
         friendsurvive = friend.ALIVE.sum()
-    
+
         foesurvive = foe.ALIVE.sum()
-    
+
         if (story == 'verbose' or story =='summary'):
             print('After ' + str(round+1) + ' rounds')
             print('Friend Summary: ')
@@ -498,18 +489,16 @@ def encounterloop(story,friendfilename,foefilename,maxrounds,MOSC,HPHR,critrule,
             print('Foe Summary: ')
             for l in range(0,len(foe)):
                 print(str(foe.Name[l]) + ': ' + str(foe.ALIVE[l]) + '/' +str(foe.Count[l])+' alive with ' + str(foe.WHP[l]) + ' HP remaining for most injured')
-    
+
         #RECORD RESULTS
         #average number of rounds
         avgrounds = (avgrounds * (OSC-1) + round)/OSC
-    
+
         #survival percentages
-    
+
         for i in range(0,len(friend)):
             results.loc[i,'SurvFrac'] = (results.SurvFrac[i]*(OSC-1)*friend.Count[i]+friend.ALIVE[i])/(OSC*friend.Count[i])
         for i in range(0, len(foe)):
             results.loc[(i + len(friend)),'SurvFrac'] = (results.SurvFrac[i + len(friend)]*(OSC-1)*foe.Count[i]+foe.ALIVE[i])/(OSC*foe.Count[i])
 
     return version, avgrounds, results
-
-
