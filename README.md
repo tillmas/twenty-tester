@@ -11,4 +11,5 @@ Please see the GitHub wiki for information on the csv files.
 
 RELEASE NOTES:
 
-1.  Added command line functionality
+1.  Added run setup file functionality
+2.  Made it possible to use multiple (or alternately named) input files
