@@ -1,7 +1,9 @@
 # twenty-tester
-###Current Version 1.6d0 Likable Lich
+###Current Version 1.6d1 Likable Lich (with DungeonDOE v1.0)
 
   Developed to numerically simulate interesting features of combat in d20 games.
+  
+  Provides ability to create DOE setup for runs (limited)
 
 ##Files included in distribution:
 
@@ -13,7 +15,9 @@
 
   FoeX.csv - user input csv file that defines the other side of the encounter.  
   
-  setup.cfg - user input csv file that defines the parameters of the analysis runs
+  runsetup.cfg - user input csv file that defines the parameters of the analysis runs
+  
+  DungeonDOE.py - creates the runsetup.cfg and modifies Foe and Friend.csv to create the DOE
 
   TTlogo.png - the beautiful logo for twenty-tester
   
