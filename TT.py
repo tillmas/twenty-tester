@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 """
 Twenty Tester v1.6d0 - Likable Lich
+
 TT.py
 
 Numerical Simulation of Combat in d20 Games
 
 @author: Matt Tillman
 """
+
 import sys
 import pandas as pd
 import numpy as np
@@ -502,3 +504,4 @@ def encounterloop(story,friendfilename,foefilename,maxrounds,MOSC,HPHR,critrule,
             results.loc[(i + len(friend)),'SurvFrac'] = (results.SurvFrac[i + len(friend)]*(OSC-1)*foe.Count[i]+foe.ALIVE[i])/(OSC*foe.Count[i])
 
     return version, avgrounds, results
+

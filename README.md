@@ -28,3 +28,4 @@
 2.  Files in release are set up to show a sweep through an encounter of various sizes to determine what is a challenge for the party
 
 3.  Code is sloppy, inefficient and poorly commented, but it seems to work
+
